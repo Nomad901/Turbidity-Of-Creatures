@@ -130,8 +130,8 @@ inline void FileSystem::fileHandle::writeFile(const std::initializer_list<std::p
 	std::ofstream ofstr(mPath, std::ios::app);
 	for (auto& [key, value] : pStorage)
 	{
-		//mJSONstream[key] = value;
-		ofstr << (mJSONstream[key] = value);
+		mJSONstream[key] = value;
+		ofstr << mJSONstream[key];
 	}
 }
 
