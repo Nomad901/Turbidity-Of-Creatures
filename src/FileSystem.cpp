@@ -123,8 +123,9 @@ void FileSystem::fileHandle::writeFile(std::string_view pData)
 
 std::string FileSystem::fileHandle::readFileString()
 {
+	std::ifstream ifstream(mPath);
 	std::string line;
-	while (std::getline(mFstream, line))
+	while (std::getline(ifstream, line))
 	{
 		mBufferText += line + '\n';
 	}
@@ -133,8 +134,9 @@ std::string FileSystem::fileHandle::readFileString()
 
 void FileSystem::fileHandle::readFile()
 {
+	std::ifstream ifstream(mPath);
 	std::string line;
-	while (std::getline(mFstream, line))
+	while (std::getline(ifstream, line))
 	{
 		std::cout << line << '\n';
 		mBufferText += line + '\n';
