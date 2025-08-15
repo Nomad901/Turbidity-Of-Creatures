@@ -3,6 +3,7 @@
 #include <format>
 #include <filesystem>
 #include <memory>
+#include <chrono>
 
 #include "FileSystem.h"
 
@@ -21,14 +22,18 @@ public:
 	static LogSystem& getInstance();
  
 	auto getInfo(typeInfo pType, std::string_view pMsg,
-				 std::string_view pFile, int32_t pLine) const noexcept -> const std::string&;
+				 std::string_view pFile, int32_t pLine) -> std::string;
 	auto getWarning(typeInfo pType, std::string_view pMsg,
-					std::string_view pFile, int32_t pLine) const noexcept -> const std::string&;
+					std::string_view pFile, int32_t pLine) -> std::string;
 	auto getError(typeInfo pType, std::string_view pMsg,
-				  std::string_view pFile, int32_t pLine) const noexcept -> const std::string&;
+				  std::string_view pFile, int32_t pLine) -> std::string;
+
+	auto clearLogFile() -> void;
+	// getting data from the log-file;
+	auto getLogFile() -> std::string;
 
 protected:
-	LogSystem() = default;
+	LogSystem();
 	~LogSystem();
 
 private:
@@ -45,18 +50,14 @@ private:
 
 // LogSystem::typeInfo for the pType
 #define LOG(pType, pMsg) \
-    do \
-	{ \
+	[&]() -> std::string { \
         switch (pType) \
 		{ \
             case LogSystem::typeInfo::INFO: \
-                LogSystem::getInstance().getInfo(pType, pMsg, __FILE__, __LINE__); \
-                break; \
+                return LogSystem::getInstance().getInfo(pType, pMsg, __FILE__, __LINE__); \
             case LogSystem::typeInfo::WARNING: \
-                LogSystem::getInstance().getWarning(pType, pMsg, __FILE__, __LINE__); \
-                break; \
+                return LogSystem::getInstance().getWarning(pType, pMsg, __FILE__, __LINE__); \
             default: \
-                LogSystem::getInstance().getError(pType, pMsg, __FILE__, __LINE__); \
-                break; \
+                return LogSystem::getInstance().getError(pType, pMsg, __FILE__, __LINE__); \
 		} \
-    } while (0) 
+	}()
